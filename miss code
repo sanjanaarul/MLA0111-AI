@@ -1,0 +1,26 @@
+from collections import deque
+
+def valid(state):
+    m, c = state
+    return 0 <= m <= 3 and 0 <= c <= 3 and (m == 0 or m >= c) and (3 - m == 0 or 3 - m >= 3 - c)
+
+def solve():
+    start = (3, 3, 1)
+    q = deque([(start, [])])
+
+    while q:
+        state, path = q.popleft()
+        if state == (0, 0, 0):
+            return path + [state]
+        m, c, b = state
+        for m_delta, c_delta, b_delta in [(1, 0, 1), (2, 0, 1), (0, 1, 1), (0, 2, 1), (1, 1, 1)]:
+            if 0 <= m + m_delta <= 3 and 0 <= c + c_delta <= 3 and 1 <= b + b_delta <= 1 and valid((m + m_delta * (-1)**b, c + c_delta * (-1)**b)):
+                q.append(((m + m_delta * (-1)**b, c + c_delta * (-1)**b, 1 - b), path + [state]))
+    return None
+
+solution = solve()
+if solution:
+    for state in solution:
+        print(state)
+else:
+    print("No solution found.")
